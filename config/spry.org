@@ -1,0 +1,137 @@
+#+TITLE: Spry Emacs Config
+
+I began using Emacs in 2025, and this repository is heavily adapted from my friend's setup ([[https://github.com/psychicalcoder/chezmoi_dotfiles/blob/master/private_dot_emacs.d/frolic.org][Frolic Emacs)]] with some modifications for smooth use on my MacBook.
+
+** Some Useful Packages
+#+begin_src elisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+
+  (package-install 'vertico)
+  (package-install 'consult)
+  (package-install 'company)
+
+  (global-company-mode t)
+  (vertico-mode t)
+
+  ;; inhibit the startup screen *GNU Emacs*
+  (setq inhibit-startup-screen t)
+  ;; hide the menu bar on MacOS
+  (tool-bar-mode 0)
+
+  (add-to-list 'exec-path "/opt/homebrew/bin")
+#+end_src
+
+** Keyboard Remapping and Global Key Binding
+#+begin_src elisp
+  (setq mac-command-modifier 'meta
+        mac-option-modifier 'super)
+
+  (global-set-key (kbd "M-r") #'revert-buffer)
+  (global-set-key (kbd "M-s") #'isearch-forward)
+#+end_src
+
+** Consult
+#+begin_src elisp
+   (use-package consult
+    :bind (
+           ("C-b" . consult-buffer)
+           ("C-s" . consult-line)
+           ("C-r" . consult-ripgrep)
+           ("M-g g" . consult-goto-line)))
+#+end_src
+
+** Theme
+#+begin_src elisp
+  (package-install 'doom-themes)
+  (use-package doom-themes
+    :ensure t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic t)
+    ;; (load-theme 'doom-one t)
+    (load-theme 'doom-tomorrow-night t)
+    ;; (load-theme 'doom-pine t)
+    ;; (load-theme 'doom-palenight t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable custom neotree theme (nerd-icons must be installed!)
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+
+  (set-face-attribute 'default nil :height 140) ; Set default font size = 14pt
+#+end_src
+
+** Magit
+#+begin_src elisp
+  (package-install 'magit)
+#+end_src
+
+** Frame Management
+#+begin_src elisp
+  (setq ns-pop-up-frames nil)
+#+end_src
+
+** Disable Auto Backup/Save
+#+begin_src elisp
+  (setq make-backup-files nil
+        auto-save-default nil)
+#+end_src
+
+* Programming
+** Editor
+#+begin_src elisp
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 4)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (scroll-bar-mode -1)
+#+end_src
+
+** LLVM
+#+begin_src elisp
+  (setq load-path
+    (cons (expand-file-name "~/llvm-project/llvm/utils/emacs/") load-path))
+  (require 'llvm-mode)
+  (require 'llvm-mir-mode)
+  (require 'tablegen-mode)
+  (add-hook 'tablegen-mode-hook #'turn-on-font-lock)
+#+end_src
+
+** LSP Mode
+#+begin_src elisp
+  (use-package 
+    lsp-mode
+    :ensure t
+    :init (global-flycheck-mode)
+    (setq lsp-keymap-prefix "C-c l")
+    :hook ((c++-mode . lsp)))
+
+  (use-package lsp-pyright
+    :ensure t
+    :custom (lsp-pyright-langserver-command "pyright")
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-pyright)
+                           (lsp))))
+#+end_src
+
+** CMake
+#+begin_src elisp
+  (package-install 'cmake-mode)
+  (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
+#+end_src
+
+** Flycheck
+#+begin_src elisp
+;  (package-install 'flycheck)
+  (use-package flycheck
+    :ensure t
+    :config
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+#+end_src

@@ -1,0 +1,5 @@
+#+TITLE: Spry Emacs Config
+
+I began using Emacs in 2025, and this configuration is heavily adapted from my friend's setup
+([[https://github.com/psychicalcoder/chezmoi_dotfiles/blob/master/private_dot_emacs.d/frolic.org][Frolic Emacs]]) with some modifications for smooth use on my MacBook and adjustments to fit my daily
+workflow.

@@ -1,3 +1,8 @@
 *~
 *.elc
 *.log
+.DS_Store
+.lsp-session-v1
+config/*.el
+elpa/
+transient/
