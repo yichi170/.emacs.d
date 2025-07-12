@@ -1,6 +1,10 @@
 #+TITLE: Spry Emacs Config
 
-I began using Emacs in 2025, and this repository is heavily adapted from my friend's setup ([[https://github.com/psychicalcoder/chezmoi_dotfiles/blob/master/private_dot_emacs.d/frolic.org][Frolic Emacs)]] with some modifications for smooth use on my MacBook.
+#+begin_quote
+"Spry" means active and lively, especially in older people.
+#+end_quote
+
+I began using Emacs in 2025, and this config serves as a living document of how I customize and improve my development environment over time.
 
 ** Some Useful Packages
 #+begin_src elisp
