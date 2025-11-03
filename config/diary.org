@@ -1,0 +1,46 @@
+#+TITLE: Weekly Diary Utilities
+
+* Weekly Diary
+Define a interactive function ~open-weekly-diary~ so that I can open my diary through M-x.
+
+#+BEGIN_SRC emacs-lisp
+  ;; (defun get-week-range ()
+  ;;   "Return the date range for the current week in YYMMDD format, Sunday to Saturday."
+  ;;   (let* ((today (current-time))
+  ;;          (decoded-time (decode-time today))
+  ;;          (year (nth 5 decoded-time))
+  ;;          (month (nth 4 decoded-time))
+  ;;          (day (nth 3 decoded-time))
+  ;;          (day-of-week (calendar-day-of-week (list month day year)))
+  ;;          (days-to-sunday (- day-of-week))
+  ;;          (days-to-saturday (- 6 day-of-week)))
+  ;;     (let ((sunday (time-subtract today (days-to-time days-to-sunday)))
+  ;;           (saturday (time-add today (days-to-time days-to-saturday))))
+  ;;       (let ((sunday-str (format-time-string "%y%m%d" sunday))
+  ;;             (saturday-str (format-time-string "%y%m%d" saturday)))
+  ;;         (concat sunday-str saturday-str)))))
+
+
+  (defun get-week-range ()
+    "Return the current week's date range (Sunday–Saturday) in YYMMDD format."
+    (let* ((now (current-time))
+           (dow (nth 6 (decode-time now)))
+           (sunday (time-subtract now (days-to-time dow)))
+           (saturday (time-add sunday (days-to-time 6))))
+      (concat (format-time-string "%y%m%d" sunday)
+              (format-time-string "%y%m%d" saturday))))
+
+
+  (defun open-weekly-diary ()
+    "Open or create this week's diary file under ~/Diary."
+    (interactive)
+    (let* ((dir "~/Diary/")
+           (file (expand-file-name (concat (get-week-range) ".org") dir)))
+      (unless (file-exists-p dir)
+        (make-directory dir t))  ; create ~/Diary if it doesn’t exist
+      (find-file file)))          ; open (and create if necessary)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c d") #'open-weekly-diary)
+#+END_SRC
